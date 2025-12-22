@@ -1,60 +1,56 @@
-import React, { useEffect, useState } from "react";
+import Slider from "react-slick";
 import Title from "../ui/Title";
-import MenuItem from "./MenuItem";
+import Image from "next/image";
 
-const MenuWrapper = ({ categoryList, productList }) => {
-  const [active, setActive] = useState(0);
-  const [filter, setFilter] = useState([]);
-  const [productLimit, setProductLimit] = useState(3);
-
-  // useEffect(() => {
-  //   setFilter(
-  //     productList.filter(
-  //       (product) =>
-  //         product.category.toLowerCase() ===
-  //         categoryList[active].title.toLowerCase()
-  //     )
-  //   );
-  // }, [categoryList, active, productList]);
-
+export default function MenuWrapper() {
   return (
-    <div className="container mx-auto  mb-16">
-      <div className="flex flex-col items-center w-full">
-        <Title addClass="text-[40px]">Our Menu</Title>
-        <div className="mt-10">
-          {categoryList &&
-            categoryList.map((category, index) => (
-              <button
-                className={`px-6 py-2 ${
-                  index === active && "bg-secondary text-white "
-                } ml-4 rounded-3xl `}
-                key={category._id}
-                onClick={() => {
-                  setActive(index);
-                  setProductLimit(3);
-                }}
-              >
-                {category.title}
-              </button>
-            ))}
+    <div className="relative w-full min-h-[500px] bg-[#ee4d2d] flex flex-col items-center justify-center text-white overflow-hidden px-4 py-10">
+      {/* Background */}
+      <div className="absolute inset-0 opacity-10 pointer-events-none">
+        <Image
+          src="/images/merchant-register-landing-4.jpg"
+          alt="City Background"
+          layout="fill"
+          objectFit="cover"
+          priority
+        />
+      </div>
+
+      <div className="relative z-10 flex flex-col items-center text-center max-w-5xl">
+        <div className="relative w-[300px] h-[200px] md:w-[450px] md:h-[300px] mb-6">
+          <Image
+            src="/images/merchant-register-landing-4.jpg"
+            alt="Đội ngũ tài xế ShopeeFood"
+            layout="fill"
+            objectFit="contain"
+            priority
+          />
         </div>
-      </div>
-      <div className="mt-8 grid md:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-4 min-h-[450px]">
-        {filter.length > 0 &&
-          filter
-            .slice(0, productLimit)
-            .map((product) => <MenuItem key={product._id} product={product} />)}
-      </div>
-      <div className="flex items-center justify-center my-8">
-        <button
-          className="btn-primary"
-          onClick={() => setProductLimit(productLimit + 3)}
-        >
-          View More
-        </button>
+
+        <p className="text-sm md:text-lg font-light max-w-3xl mb-10 leading-relaxed opacity-95">
+          Sử dụng App UFood để có nhiều giảm giá và trải nghiệm tốt hơn
+        </p>
+
+        <div className="flex flex-wrap justify-center items-center gap-4">
+          <div className="relative w-[140px] h-[42px] cursor-pointer">
+            <Image
+              src="/images/Google-Play-Logo-Vector.png"
+              alt="Tải trên Google Play"
+              layout="fill"
+              objectFit="contain"
+            />
+          </div>
+
+          <div className="relative w-[140px] h-[42px] cursor-pointer">
+            <Image
+              src="/images/76748a84c1793ffdf9883dba680125b6.png"
+              alt="Tải trên App Store"
+              layout="fill"
+              objectFit="contain"
+            />
+          </div>
+        </div>
       </div>
     </div>
   );
-};
-
-export default MenuWrapper;
+}

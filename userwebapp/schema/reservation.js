@@ -2,12 +2,13 @@ import * as Yup from "yup";
 
 export const reservationSchema = Yup.object({
   fullName: Yup.string()
-    .required("Full name is required.")
-    .min(3, "Full name must be at least 3 characters."),
+    .required("Tên là bắt buộc.")
+    .min(3, "Tên phải có ít nhất 3 ký tự."),
   phoneNumber: Yup.string()
-    .required("Full name is required.")
-    .min(10, "Phone number must be at least 10 characters."),
-  email: Yup.string().required("Email is required.").email("Email is invalid."),
-  persons: Yup.string().required("Persons is required."),
-  date: Yup.string().required("Date is required."),
+    .required("Số điện thoại là bắt buộc.")
+    .min(10, "Số điện thoại phải có ít nhất 10 ký tự."),
+  email: Yup.string()
+    .required("Email là bắt buộc.")
+    .email("Email không hợp lệ."),
+  persons: Yup.string().required("Lời nhắn là bắt buộc."),
 });

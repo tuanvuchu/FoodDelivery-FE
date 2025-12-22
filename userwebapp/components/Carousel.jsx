@@ -2,7 +2,7 @@ import Image from "next/image";
 import Title from "./ui/Title";
 import Slider from "react-slick";
 
-const Carousel = () => {
+export default function Carousel() {
   const settings = {
     dots: true,
     infinite: true,
@@ -61,6 +61,4 @@ const Carousel = () => {
       </Slider>
     </div>
   );
-};
-
-export default Carousel;
+}

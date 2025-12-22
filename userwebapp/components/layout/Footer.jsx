@@ -1,7 +1,7 @@
 import Title from "../ui/Title";
 
 const footerData = {
-  location: "https://maps.google.com",
+  location: "https://maps.app.goo.gl/dKqaMpgYfAyhP5cq5",
   phoneNumber: "0123 456 789",
   email: "contact@ufood.vn",
   desc: "UFood mang đến những món ăn chất lượng, nhanh chóng và tiện lợi cho mọi bữa ăn của bạn.",

@@ -18,7 +18,7 @@ export default function Search({ setIsSearchModal }) {
   const getProducts = async () => {
     try {
       const res = await axios.get(
-        `${process.env.NEXT_PUBLIC_API_URL}/products/get-all-admin`
+        `${process.env.NEXT_PUBLIC_API_URL}/products/get-all-admin`,
       );
       setProduct(res.data);
       setFiltered(res.data);
@@ -36,7 +36,7 @@ export default function Search({ setIsSearchModal }) {
   const handleSearch = async (e) => {
     setSearch(e.target.value);
     const searchFilter = product.filter((item) =>
-      item.name.toLowerCase().includes(e.target.value.toLowerCase())
+      item.name.toLowerCase().includes(e.target.value.toLowerCase()),
     );
     setFiltered(searchFilter);
   };

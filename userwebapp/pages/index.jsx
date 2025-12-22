@@ -5,7 +5,7 @@ export default function Index({ categoryList, productList }) {
   return (
     <div className="">
       <Head>
-        <title>UFood</title>
+        <title>U Food</title>
         <link rel="icon" href="/favicon.ico" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link
