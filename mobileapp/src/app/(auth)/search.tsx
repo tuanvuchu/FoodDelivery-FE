@@ -1,4 +1,12 @@
-import { Image, Modal, Pressable, Text, TextInput, View } from "react-native";
+import {
+  Image,
+  Modal,
+  Pressable,
+  ScrollView,
+  Text,
+  TextInput,
+  View,
+} from "react-native";
 import debounce from "debounce";
 import { getRestaurantsByNameAPI, getURLBaseBackend } from "@/utils/api";
 import { useState } from "react";
@@ -9,6 +17,9 @@ import { APP_COLOR } from "@/utils/constants";
 import DefaultResult from "@/components/default.result";
 
 const SearchPage = () => {
+  const [lastFoundProducts, setLastFoundProducts] = useState<any[]>([]);
+  const [awaitingAddToCart, setAwaitingAddToCart] = useState(false);
+
   const [visible, setVisible] = useState(false);
   const [restaurants, setRestaurants] = useState<IRestaurant[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>("");
@@ -22,20 +33,132 @@ const SearchPage = () => {
     if (res.items) setRestaurants(res.items);
   }, 500);
 
+  const handleAddToCart = (text: string) => {
+    // lấy số lượng (mặc định = 1)
+    let quantity = 1;
+    const matchQty = text.match(/\b(\d+)\b/);
+    if (matchQty) quantity = parseInt(matchQty[1], 10);
+    console.log(lastFoundProducts);
+
+    // tìm sản phẩm trong danh sách vừa search
+    const product = lastFoundProducts.find((p) =>
+      text.toLowerCase().includes(p.name.toLowerCase())
+    );
+    console.log(product);
+    if (!product) {
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: Date.now() + "-bot",
+          role: "bot",
+          text: "Bạn muốn thêm món nào trong danh sách tôi vừa gợi ý?",
+        },
+      ]);
+      return;
+    }
+
+    console.log(text);
+
+    setMessages((prev) => [
+      ...prev,
+      {
+        id: Date.now() + "-bot",
+        role: "bot",
+        text: `Đã thêm ${quantity} ${product.name} vào giỏ hàng.`,
+      },
+    ]);
+
+    setAwaitingAddToCart(false);
+  };
+
   const handleSearch1 = debounce(async (text: string) => {
-    if (!text) return;
+    if (!text.trim()) return;
+    const isAddCommand =
+      awaitingAddToCart &&
+      (text.includes("thêm") ||
+        text.includes("mua") ||
+        text.includes("cho vào"));
+
+    if (isAddCommand) {
+      setMessages((prev) => [
+        ...prev,
+        { id: Date.now() + "", role: "user", text },
+      ]);
+
+      handleAddToCart(text);
+      return;
+    }
+    setMessages((prev) => [
+      ...prev,
+      { id: Date.now() + "", role: "user", text },
+    ]);
+
+    setLoading(true);
+
+    setMessages((prev) => [
+      ...prev,
+      {
+        id: "loading",
+        role: "bot",
+        text: "Đang tìm món phù hợp cho bạn...",
+      },
+    ]);
+
     try {
-      const res = await fetch("http://192.168.1.77:8002/search", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ query: text }),
-      });
+      const res = await fetch(
+        `${getURLBaseBackend()}/api/v1/products/search-by-ingredients?q=${encodeURIComponent(
+          text
+        )}`,
+        {
+          method: "GET",
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+
       const data = await res.json();
       setRestaurants1(data);
+      setLastFoundProducts(data);
+      setAwaitingAddToCart(data.length > 0);
+
+      setMessages((prev) =>
+        prev
+          .filter((m) => m.id !== "loading")
+          .concat({
+            id: Date.now() + "-bot",
+            role: "bot",
+            text:
+              data.length > 0
+                ? `Tôi tìm được ${data.length} món phù hợp`
+                : "Xin lỗi, tôi chưa tìm được món phù hợp",
+          })
+      );
     } catch (error) {
-      console.log(error);
+      console.error(error);
+      setMessages((prev) =>
+        prev
+          .filter((m) => m.id !== "loading")
+          .concat({
+            id: Date.now() + "-error",
+            role: "bot",
+            text: "Có lỗi xảy ra, bạn thử lại nhé.",
+          })
+      );
+    } finally {
+      setLoading(false);
     }
   }, 500);
+
+  const [messages, setMessages] = useState<
+    { id: string; role: "bot" | "user"; text: string }[]
+  >([
+    {
+      id: "bot-hello",
+      role: "bot",
+      text: "Xin chào 👋 Bạn muốn ăn món gì hôm nay?",
+    },
+  ]);
+
+  const [loading, setLoading] = useState(false);
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -106,86 +229,78 @@ const SearchPage = () => {
           </View>
         )}
       </View>
-      <Pressable onPress={() => setVisible(true)}>
-        <MaterialIcons
-          style={{ position: "absolute", bottom: 50, right: 5 }}
-          name="chat-bubble"
-          size={35}
-          color="#3700ffff"
-        />
+      <Pressable
+        onPress={() => setVisible(true)}
+        style={{
+          position: "absolute",
+          bottom: 20,
+          right: 16,
+          zIndex: 999,
+        }}
+      >
+        <MaterialIcons name="chat-bubble" size={36} color="#3700ff" />
       </Pressable>
 
       <Modal
         visible={visible}
         animationType="slide"
-        transparent={true}
+        transparent
         onRequestClose={() => setVisible(false)}
       >
-        <View
-          style={{
-            flex: 1,
-            backgroundColor: "rgba(0,0,0,0.5)",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
+        <View style={{ flex: 1, backgroundColor: "rgba(0,0,0,0.4)" }}>
           <View
             style={{
-              width: 300,
+              marginTop: "auto",
+              height: "80%",
               backgroundColor: "#fff",
-              padding: 20,
-              borderRadius: 12,
+              borderTopLeftRadius: 16,
+              borderTopRightRadius: 16,
+              overflow: "hidden",
             }}
           >
-            <Text
-              style={{ fontSize: 20, fontWeight: "bold", marginBottom: 10 }}
-            >
-              Xin chào 👋
-            </Text>
-            <Text style={{ marginBottom: 20 }}>
-              Bạn muốn ăn món gì? Nhập vào bên dưới để tôi gợi ý nhé!
-            </Text>
-
             <View
               style={{
-                flexDirection: "row",
-                alignItems: "center",
-                borderWidth: 1,
-                borderColor: "#ccc",
-                borderRadius: 8,
-                paddingHorizontal: 10,
-                marginBottom: 20,
+                padding: 14,
+                borderBottomWidth: 1,
+                borderColor: "#eee",
               }}
             >
-              <TextInput
-                placeholder="Nhập món ăn..."
-                onChangeText={(text: string) => setSearchTerm1(text)}
-                value={searchTerm1}
-                style={{
-                  flex: 1,
-                  height: 45,
-                }}
-              />
-              <Pressable
-                onPress={() => {
-                  handleSearch1(searchTerm1);
-                }}
-                style={{
-                  backgroundColor: "#007bff",
-                  paddingVertical: 8,
-                  paddingHorizontal: 15,
-                  borderRadius: 6,
-                  marginLeft: 8,
-                }}
-              >
-                <Text style={{ color: "#fff", fontWeight: "bold" }}>Gửi</Text>
-              </Pressable>
+              <Text style={{ fontSize: 18, fontWeight: "bold" }}>
+                Trợ lý ăn uống 🍔
+              </Text>
+              <Text style={{ color: "#666", marginTop: 4 }}>
+                Bạn muốn ăn gì hôm nay?
+              </Text>
             </View>
-            {restaurants1?.results?.length > 0 &&
-              restaurants1.results.map((item) => (
+
+            <ScrollView contentContainerStyle={{ padding: 16 }}>
+              {messages.map((m) => (
+                <View
+                  key={m.id}
+                  style={{
+                    alignSelf: m.role === "bot" ? "flex-start" : "flex-end",
+                    backgroundColor: m.role === "bot" ? "#f1f1f1" : "#3700ff",
+                    padding: 12,
+                    borderRadius: 12,
+                    marginBottom: 10,
+                    maxWidth: "80%",
+                  }}
+                >
+                  <Text style={{ color: m.role === "bot" ? "#000" : "#fff" }}>
+                    {m.text}
+                  </Text>
+                </View>
+              ))}
+
+              {restaurants1.map((item) => (
                 <View
                   key={item.id}
-                  style={{ marginVertical: 8, flexDirection: "row" }}
+                  style={{
+                    backgroundColor: "#fafafa",
+                    borderRadius: 12,
+                    padding: 10,
+                    marginBottom: 12,
+                  }}
                 >
                   <Image
                     source={{
@@ -193,27 +308,68 @@ const SearchPage = () => {
                         item.image
                       }`,
                     }}
-                    style={{ width: 100, height: 100, borderRadius: 8 }}
+                    style={{ width: "100%", height: 120, borderRadius: 8 }}
                   />
-                  <Text style={{ fontSize: 18, fontWeight: "bold" }}>
+                  <Text
+                    style={{ fontSize: 16, fontWeight: "bold", marginTop: 6 }}
+                  >
                     {item.name}
                   </Text>
                 </View>
               ))}
+            </ScrollView>
 
-            <Pressable
+            <View
               style={{
-                backgroundColor: "#ccc",
-                paddingVertical: 10,
-                borderRadius: 8,
-                alignItems: "center",
-              }}
-              onPress={() => {
-                setRestaurants1([]);
-                setVisible(false);
+                flexDirection: "row",
+                padding: 12,
+                borderTopWidth: 1,
+                borderColor: "#eee",
               }}
             >
-              <Text style={{ color: "#333", fontWeight: "bold" }}>Đóng</Text>
+              <TextInput
+                editable={!loading}
+                placeholder="Ví dụ: tôi muốn ăn thịt lợn"
+                value={searchTerm1}
+                onChangeText={setSearchTerm1}
+                style={{
+                  flex: 1,
+                  backgroundColor: "#f1f1f1",
+                  borderRadius: 20,
+                  paddingHorizontal: 16,
+                  height: 44,
+                }}
+              />
+
+              <Pressable
+                onPress={() => handleSearch1(searchTerm1)}
+                style={{
+                  marginLeft: 8,
+                  backgroundColor: "#3700ff",
+                  width: 44,
+                  height: 44,
+                  borderRadius: 22,
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Text style={{ color: "#fff", fontSize: 18 }}>➤</Text>
+              </Pressable>
+            </View>
+
+            <Pressable
+              onPress={() => {
+                setRestaurants1([]);
+                setSearchTerm1("");
+                setVisible(false);
+              }}
+              style={{
+                position: "absolute",
+                top: 10,
+                right: 10,
+              }}
+            >
+              <Text style={{ fontSize: 18 }}>✕</Text>
             </Pressable>
           </View>
         </View>

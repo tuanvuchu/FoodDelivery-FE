@@ -1,16 +1,16 @@
-import { filterRestaurantAPI, getURLBaseBackend } from "@/utils/api";
+import { filterRestaurantAPI } from "@/utils/api";
 import { APP_COLOR } from "@/utils/constants";
 import { router } from "expo-router";
 import { useEffect, useState } from "react";
 import { FlatList, Image, Pressable, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-const restaurants = () => {
+export default function Page() {
   const [restaurants, setRestaurants] = useState<IRestaurant[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
 
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const [pageSize, setPageSize] = useState<number>(5);
+  const [pageSize] = useState<number>(5);
 
   const handleEndReached = async () => {
     if (!loading) {
@@ -32,7 +32,7 @@ const restaurants = () => {
   useEffect(() => {
     const fetchData = async () => {
       const res = await filterRestaurantAPI(
-        `current=${currentPage}&pageSize=${pageSize}`,
+        `current=${currentPage}&pageSize=${pageSize}`
       );
       if (res.data) setRestaurants([...restaurants, ...res.data.items]);
       setLoading(false);
@@ -87,6 +87,4 @@ const restaurants = () => {
       </View>
     </SafeAreaView>
   );
-};
-
-export default restaurants;
+}

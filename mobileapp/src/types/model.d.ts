@@ -22,6 +22,7 @@ declare global {
       phone: string | null;
       image: string | null;
       address: string | null;
+      delivery_address: [] | null;
     };
     access_token: string;
   }

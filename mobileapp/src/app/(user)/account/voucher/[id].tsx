@@ -10,8 +10,8 @@ import {
   ActivityIndicator,
 } from "react-native";
 import { format, parseISO } from "date-fns";
+import { getURLBaseBackend } from "@/utils/api";
 
-const backend = process.env.EXPO_PUBLIC_ANDROID_API_URL;
 const VoucherDetail = () => {
   const { id } = useLocalSearchParams();
   const [voucher, setVouchers] = useState<any>(null);
@@ -26,7 +26,7 @@ const VoucherDetail = () => {
   useEffect(() => {
     const fetchVouchers = async () => {
       try {
-        const res = await fetch(`${backend}/api/v1/vouchers/${id}`);
+        const res = await fetch(`${getURLBaseBackend()}/api/v1/vouchers/${id}`);
         const data = await res.json();
         setVouchers(data);
       } catch (err) {

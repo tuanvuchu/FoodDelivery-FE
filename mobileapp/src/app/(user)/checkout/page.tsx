@@ -65,7 +65,7 @@ export default function Page() {
       setTotalQuantity(totalQ);
       setTotalPrice(totalP);
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 

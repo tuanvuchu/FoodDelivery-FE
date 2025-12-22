@@ -1,7 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 
-const backend = process.env.EXPO_PUBLIC_ANDROID_API_URL;
+const backend = process.env.API_URL;
 
 const instance = axios.create({
   baseURL: backend,
@@ -20,7 +20,7 @@ instance.interceptors.request.use(
   function (error) {
     // Do something with request error
     return Promise.reject(error);
-  },
+  }
 );
 // Add a response interceptor
 instance.interceptors.response.use(
@@ -36,7 +36,7 @@ instance.interceptors.response.use(
       return error.response.data;
     }
     return Promise.reject(error);
-  },
+  }
 );
 
 export default instance;

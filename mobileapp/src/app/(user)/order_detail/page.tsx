@@ -18,7 +18,7 @@ const OrderDetailsScreen = () => {
       const data = await res.json();
       setOrderData(data);
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   }
 

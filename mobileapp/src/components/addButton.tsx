@@ -1,7 +1,6 @@
 import { Feather } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { View } from "react-native";
-import { Pressable } from "react-native";
+import { Pressable, View } from "react-native";
 
 export default function AddButton({ id, quantity = 1, unit_price, onAdded }) {
   async function addToCart(id, quantity, unit_price) {

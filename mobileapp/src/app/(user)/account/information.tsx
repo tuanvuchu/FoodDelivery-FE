@@ -7,7 +7,6 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
-  StyleSheet,
   View,
 } from "react-native";
 import ShareButton from "@/components/share.button";
@@ -21,7 +20,7 @@ const InformationPage = () => {
   const handleUpdateUserInfo = async (
     name: string,
     email: string,
-    phone: string,
+    phone: string
   ) => {
     if (appState?.user.id) {
       setIsLoading(true);
@@ -74,7 +73,7 @@ const InformationPage = () => {
               handleUpdateUserInfo(
                 values?.name ?? "",
                 values?.email ?? "",
-                values?.phone ?? "",
+                values?.phone ?? ""
               )
             }
           >

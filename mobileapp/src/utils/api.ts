@@ -1,8 +1,8 @@
 import instance from "@/utils/axios.customize";
-import { Platform } from "react-native";
 
+const backend = process.env.EXPO_PUBLIC_API_URL;
 export const registerAPI = (name: string, email: string, password: string) => {
-  const url = `/api/v1/auth/register`;
+  const url = `${backend}/api/v1/auth/register`;
   return instance.post<IBackendRes<IRegister>>(url, {
     name,
     email,
@@ -11,7 +11,7 @@ export const registerAPI = (name: string, email: string, password: string) => {
 };
 
 export const loginAPI = async (username: string, password: string) => {
-  const url = `${getURLBaseBackend()}/api/v1/auth/login`;
+  const url = `${backend}/api/v1/auth/login`;
   try {
     const res = await fetch(url, {
       method: "POST",
@@ -34,26 +34,26 @@ export const loginAPI = async (username: string, password: string) => {
 };
 
 export const getAccountAPI = () => {
-  const url = `/api/v1/auth/account`;
+  const url = `${backend}/api/v1/auth/account`;
   return instance.get<IBackendRes<IUserLogin>>(url);
 };
 
 export const getTopRestaurantAPI = (ref: string) => {
-  const url = `/api/v1/restaurants/${ref}`;
+  const url = `${backend}/api/v1/restaurants/${ref}`;
   return instance.get<IBackendRes<ITopRestaurant[]>>(url, {
     headers: { delay: 2000 },
   });
 };
 
 export const getRestaurantByIdAPI = (id: string, user_id: string) => {
-  const url = `/api/v1/restaurants/${id}/${user_id}`;
+  const url = `${backend}/api/v1/restaurants/${id}/${user_id}`;
   return instance.get<IBackendRes<IRestaurant>>(url, {
     headers: { delay: 2000 },
   });
 };
 
 export const getOrderHistoryAPI = () => {
-  const url = `/api/v1/orders`;
+  const url = `${backend}/api/v1/orders`;
   return instance.get<IBackendRes<IOrderHistory[]>>(url);
 };
 
@@ -63,32 +63,32 @@ export const placeOrderAPI = (data: any) => {
 };
 
 export const updateUserAPI = (id: string, name: string, phone: string) => {
-  const url = `/api/v1/users`;
+  const url = `${backend}/api/v1/users`;
   return instance.patch(
     url,
     { id, name, phone },
     {
       headers: { delay: 2000 },
-    },
+    }
   );
 };
 
 export const changePasswordAPI = (
   currentPassword: string,
-  newPassword: string,
+  newPassword: string
 ) => {
-  const url = `/api/v1/users/password`;
+  const url = `${backend}/api/v1/users/password`;
   return instance.post(
     url,
     { currentPassword, newPassword },
     {
       headers: { delay: 2000 },
-    },
+    }
   );
 };
 
 export const toggleLikeAPI = (restaurant: string, quantity: number) => {
-  const url = `/api/v1/likes`;
+  const url = `${backend}/api/v1/likes`;
   return instance.post(url, {
     restaurant,
     quantity,
@@ -96,18 +96,14 @@ export const toggleLikeAPI = (restaurant: string, quantity: number) => {
 };
 
 export const getLikeRestaurantAPI = (user_id?: string) => {
-  const url = `/api/v1/favorites?user_id=${user_id}`;
+  const url = `${backend}/api/v1/favorites?user_id=${user_id}`;
   return instance.get<IBackendRes<IRestaurant[]>>(url, {
     headers: { delay: 2000 },
   });
 };
 
 export const getURLBaseBackend = () => {
-  const backend =
-    Platform.OS === "android"
-      ? process.env.EXPO_PUBLIC_ANDROID_API_URL
-      : process.env.EXPO_PUBLIC_IOS_API_URL;
-  return backend;
+  return process.env.EXPO_PUBLIC_API_URL;
 };
 
 export const processDataRestaurantMenu = (restaurant: IRestaurant | null) => {
@@ -134,17 +130,17 @@ export const currencyFormatter = (value: any) => {
   const [currency] = value.split(".");
   return `${currency.replace(
     /\B(?=(\d{3})+(?!\d))/g,
-    options.thousandsSeparator,
+    options.thousandsSeparator
   )} ${options.symbol}`;
 };
 
 export const getRestaurantsByNameAPI = (name: string) => {
-  const url = `/api/v1/restaurants?current=1&pageSize=10&name=${name}`;
+  const url = `${backend}/api/v1/restaurants?current=1&pageSize=10&name=${name}`;
   return instance.get<IRestaurant>(url);
 };
 
 export const filterRestaurantAPI = (query: string) => {
-  const url = `/api/v1/restaurants?${query}`;
+  const url = `${backend}/api/v1/restaurants?${query}`;
   return instance.get<IBackendRes<IModelPaginate<IRestaurant>>>(url, {
     headers: { delay: 2000 },
   });

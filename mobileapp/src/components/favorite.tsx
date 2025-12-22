@@ -4,13 +4,13 @@ import { useState } from "react";
 import { useCurrentApp } from "@/context/app.context";
 import { View } from "react-native";
 import Toast from "react-native-root-toast";
+import { getURLBaseBackend } from "@/utils/api";
 
 interface StickyHeaderProps {
   restaurant_id: string;
   isLiked?: boolean;
 }
 
-const backend = process.env.EXPO_PUBLIC_ANDROID_API_URL;
 
 const FavoriteButton = ({ restaurant_id, isLiked }: StickyHeaderProps) => {
   const { appState } = useCurrentApp();
@@ -19,7 +19,7 @@ const FavoriteButton = ({ restaurant_id, isLiked }: StickyHeaderProps) => {
 
   const handleToggleLike = async () => {
     try {
-      const res = await fetch(`${backend}/api/v1/favorites/toggle`, {
+      const res = await fetch(`${getURLBaseBackend()}/api/v1/favorites/toggle`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ user_id, restaurant_id }),
@@ -35,7 +35,7 @@ const FavoriteButton = ({ restaurant_id, isLiked }: StickyHeaderProps) => {
       });
       setIsLike(data.isLiked);
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 

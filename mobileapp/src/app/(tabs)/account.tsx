@@ -6,8 +6,6 @@ import { router } from "expo-router";
 import { useEffect, useState } from "react";
 import { Image, Pressable, Text, View } from "react-native";
 
-const backend = process.env.EXPO_PUBLIC_ANDROID_API_URL;
-
 const AccountTab = () => {
   const { appState } = useCurrentApp();
   const baseImage = `${getURLBaseBackend()}/api/v1/uploads`;
@@ -16,7 +14,7 @@ const AccountTab = () => {
   useEffect(() => {
     const fetchVouchers = async () => {
       try {
-        const res = await fetch(`${backend}/api/v1/vouchers/count`);
+        const res = await fetch(`${getURLBaseBackend()}/api/v1/vouchers/count`);
         const data = await res.json();
         setVouchers(data);
       } catch (error) {
@@ -186,6 +184,7 @@ const AccountTab = () => {
           />
         </Pressable>
         <Pressable
+          onPress={() => router.navigate("/(user)/account/delivery_address")}
           style={{
             marginHorizontal: 10,
             padding: 10,

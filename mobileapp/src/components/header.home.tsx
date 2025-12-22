@@ -63,7 +63,11 @@ const HeaderHome = ({
           >
             Hưng Yên
           </Text>
-          <MaterialIcons name="keyboard-arrow-right" size={20} color="#fff" />
+          <Pressable
+            onPress={() => router.navigate("/(user)/account/delivery_address")}
+          >
+            <MaterialIcons name="keyboard-arrow-right" size={20} color="#fff" />
+          </Pressable>
         </View>
       </Animated.View>
 

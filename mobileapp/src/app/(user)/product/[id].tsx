@@ -26,12 +26,12 @@ export default function ProductDetail() {
   const fetchProductById = async (productId: string) => {
     try {
       const res = await fetch(
-        `${getURLBaseBackend()}/api/v1/products/${productId}`,
+        `${getURLBaseBackend()}/api/v1/products/${productId}`
       );
       const data = await res.json();
       setProduct(data);
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 

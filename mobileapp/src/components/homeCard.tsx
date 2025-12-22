@@ -3,7 +3,6 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { FlatList, Image, Pressable, Text, View } from "react-native";
 const baseImage = `${getURLBaseBackend()}/api/v1/uploads`;
-
 interface IProps {
   title1: string;
   title2?: string;
@@ -46,7 +45,7 @@ export default function HomeCard({
           </Text>
         </View>
         <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <Text style={{ color: "#636363ff" }}>Xem tất cả</Text>
+          <Text style={{ color: "#636363ff" }}>Xem thêm</Text>
           <MaterialIcons name="navigate-next" size={24} color="#636363ff" />
         </View>
       </View>

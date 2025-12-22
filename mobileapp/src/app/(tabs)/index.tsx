@@ -16,7 +16,6 @@ import { router } from "expo-router";
 import { MaterialIcons } from "@expo/vector-icons";
 import HomeCard from "@/components/homeCard";
 import { getURLBaseBackend } from "@/utils/api";
-import { navigate } from "expo-router/build/global-state/routing";
 
 const HomeTab = () => {
   const scrollY = useRef(new Animated.Value(0)).current;
@@ -31,7 +30,7 @@ const HomeTab = () => {
   const fetchFiveStar = async () => {
     try {
       const res = await fetch(
-        `${getURLBaseBackend()}/api/v1/restaurants/five-star-restaurants`,
+        `${getURLBaseBackend()}/api/v1/restaurants/five-star-restaurants`
       );
       const data = await res.json();
       setFiveStar(data);
@@ -43,7 +42,7 @@ const HomeTab = () => {
   const fetchFiveStar1 = async () => {
     try {
       const res = await fetch(
-        `${getURLBaseBackend()}/api/v1/restaurants/top-rating`,
+        `${getURLBaseBackend()}/api/v1/restaurants/top-rating`
       );
       const data = await res.json();
       setFiveStar1(data);
@@ -54,7 +53,7 @@ const HomeTab = () => {
   const fetchFiveStar2 = async () => {
     try {
       const res = await fetch(
-        `${getURLBaseBackend()}/api/v1/restaurants/top-rating`,
+        `${getURLBaseBackend()}/api/v1/restaurants/top-rating`
       );
       const data = await res.json();
       setFiveStar2(data);
@@ -65,7 +64,7 @@ const HomeTab = () => {
   const fetchFiveStar3 = async () => {
     try {
       const res = await fetch(
-        `${getURLBaseBackend()}/api/v1/restaurants/top-rating`,
+        `${getURLBaseBackend()}/api/v1/restaurants/top-rating`
       );
       const data = await res.json();
       setFiveStar3(data);
@@ -77,7 +76,7 @@ const HomeTab = () => {
   const a = async () => {
     try {
       const res = await fetch(
-        `${getURLBaseBackend()}/api/v1/products/get-all-admin`,
+        `${getURLBaseBackend()}/api/v1/products/get-all-admin`
       );
       const data = await res.json();
       const random = data.sort(() => 0.5 - Math.random()).slice(0, 15);
@@ -111,7 +110,7 @@ const HomeTab = () => {
         scrollEventThrottle={16}
         onScroll={Animated.event(
           [{ nativeEvent: { contentOffset: { y: scrollY } } }],
-          { useNativeDriver: false },
+          { useNativeDriver: false }
         )}
       >
         <BannerHome />
@@ -335,7 +334,7 @@ const HomeTab = () => {
               Bộ sưu tập
             </Text>
             <View style={{ flexDirection: "row", alignItems: "center" }}>
-              <Text style={{ color: "#636363ff" }}>Xem tất cả</Text>
+              <Text style={{ color: "#636363ff" }}>Xem thêm</Text>
               <MaterialIcons name="navigate-next" size={24} color="#636363ff" />
             </View>
           </View>
@@ -388,7 +387,7 @@ const HomeTab = () => {
                     borderColor: "#e72e2eff",
                   }}
                 />
-                <Text style={{ color: "#e72e2eff" }}>Xem tất cả</Text>
+                <Text style={{ color: "#e72e2eff" }}>Xem thêm</Text>
               </View>
             </View>
           </View>
@@ -415,7 +414,7 @@ const HomeTab = () => {
               </Text>
             </View>
             <View style={{ flexDirection: "row", alignItems: "center" }}>
-              <Text style={{ color: "#636363ff" }}>Xem tất cả</Text>
+              <Text style={{ color: "#636363ff" }}>Xem thêm</Text>
               <MaterialIcons name="navigate-next" size={24} color="#636363ff" />
             </View>
           </View>

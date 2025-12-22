@@ -68,8 +68,8 @@ export default function Cart({ cart, onClear }: { cart: CartItem[] }) {
   const updateCartInStorage = async (updatedCart) => {
     try {
       await AsyncStorage.setItem("cart", JSON.stringify(updatedCart));
-    } catch (e) {
-      console.log(e);
+    } catch (error) {
+      console.error(error);
     }
   };
 
