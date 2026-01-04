@@ -34,17 +34,14 @@ const SearchPage = () => {
   }, 500);
 
   const handleAddToCart = (text: string) => {
-    // lấy số lượng (mặc định = 1)
     let quantity = 1;
     const matchQty = text.match(/\b(\d+)\b/);
     if (matchQty) quantity = parseInt(matchQty[1], 10);
     console.log(lastFoundProducts);
 
-    // tìm sản phẩm trong danh sách vừa search
     const product = lastFoundProducts.find((p) =>
       text.toLowerCase().includes(p.name.toLowerCase())
     );
-    console.log(product);
     if (!product) {
       setMessages((prev) => [
         ...prev,
@@ -56,8 +53,6 @@ const SearchPage = () => {
       ]);
       return;
     }
-
-    console.log(text);
 
     setMessages((prev) => [
       ...prev,
@@ -72,6 +67,7 @@ const SearchPage = () => {
   };
 
   const handleSearch1 = debounce(async (text: string) => {
+    setSearchTerm1("");
     if (!text.trim()) return;
     const isAddCommand =
       awaitingAddToCart &&

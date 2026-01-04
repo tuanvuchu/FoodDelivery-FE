@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import Title from "../../components/ui/Title";
 import { useRouter } from "next/router";
 import { useRef } from "react";
+import { formatToVND } from "../../lib/formatToVND";
 
 export default function Product() {
   const topRef = useRef(null);
@@ -100,15 +101,15 @@ export default function Product() {
                   {item.sale_price ? (
                     <>
                       <span className="font-semibold text-orange-500">
-                        {Number(item.sale_price).toLocaleString()}đ
+                        {formatToVND(item.sale_price)}
                       </span>
                       <span className="text-sm text-gray-400 line-through">
-                        {Number(item.price).toLocaleString()}đ
+                        {formatToVND(item.price)}
                       </span>
                     </>
                   ) : (
                     <span className="font-semibold">
-                      {Number(item.price).toLocaleString()}đ
+                      {formatToVND(item.price)}
                     </span>
                   )}
                   <button

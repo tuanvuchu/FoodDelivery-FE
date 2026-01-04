@@ -1,6 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useEffect, useState } from "react";
 import { ToggleButton } from "react-native-paper";
+import * as Linking from "expo-linking";
 
 import {
   Alert,
@@ -36,8 +37,8 @@ export default function Page() {
   const [noteLabel, setNoteLabel] = useState("Không có");
   const [value, setValue] = useState("cash");
 
-  const [a, setA] = useState(20000);
-  const [b, setB] = useState(3000);
+  const [a] = useState(20000);
+  const [b] = useState(3000);
 
   const [totalQuantity, setTotalQuantity] = useState(0);
   const [totalPrice, setTotalPrice] = useState(0);
@@ -69,12 +70,73 @@ export default function Page() {
     }
   };
 
+  const momo = async (amount, info) => {
+    try {
+      const body = {
+        amount: amount,
+        info: info,
+      };
+      const response = await fetch(
+        `${getURLBaseBackend()}/api/v1/payment-url-momo`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(body),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Không thể đặt đơn, vui lòng thử lại");
+      }
+      const data = await response.json();
+      await Linking.openURL(data.deeplink);
+      await AsyncStorage.removeItem("cart");
+      // Alert.alert("Thành công", "Đơn hàng đã được đặt!");
+      router.push("/(user)/order_detail/page");
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const zalopay = async (amount, info) => {
+    try {
+      const body = {
+        amount: amount,
+        info: info,
+      };
+      const response = await fetch(
+        `${getURLBaseBackend()}/api/v1/payment-url-zalopay`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(body),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Không thể đặt đơn, vui lòng thử lại");
+      }
+      const data = await response.json();
+      await Linking.openURL(data.order_url);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   const handleCheckout = async () => {
+    if (!appState?.user.id) {
+      router.push("/(auth)/authentication");
+      return;
+    }
     try {
       const body = {
         user_id: appState?.user.id,
-        payment_method: "cod",
-        note: note,
+        payment_method: value,
+        note,
         total: totalPrice,
         items: cartItems.map((item) => ({
           product_id: item.id,
@@ -82,30 +144,37 @@ export default function Page() {
           unit_price: item.price,
         })),
       };
-      const response = await fetch(`${getURLBaseBackend()}/api/v1/orders`, {
+
+      const res = await fetch(`${getURLBaseBackend()}/api/v1/orders`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
       });
 
-      if (!response.ok) {
-        throw new Error("Không thể đặt đơn, vui lòng thử lại");
+      if (!res.ok) throw new Error("Không thể đặt đơn");
+
+      if (value === "momo") {
+        await momo(totalPrice, "test");
+        return;
+      }
+
+      if (value === "zalopay") {
+        await zalopay(totalPrice, "test");
+        return;
       }
 
       await AsyncStorage.removeItem("cart");
       Alert.alert("Thành công", "Đơn hàng đã được đặt!");
       router.push("/(user)/order_detail/page");
-    } catch (error) {
-      console.error(error);
-      Alert.alert("Lỗi", error.message || "Đặt đơn thất bại");
+    } catch (err) {
+      console.error(err);
+      Alert.alert("Lỗi", err.message || "Đặt đơn thất bại");
     }
   };
 
   const fetchProducts = async () => {
     const res = await fetch(
-      `${getURLBaseBackend()}/api/v1/products/get-all-admin`,
+      `${getURLBaseBackend()}/api/v1/products/get-all-admin`
     );
     const data = await res.json();
     setProducts(data);
@@ -960,22 +1029,7 @@ export default function Page() {
         }}
       >
         <View>
-          <ToggleButton.Row
-            style={{ gap: 5 }}
-            onValueChange={setValue}
-            value={value}
-          >
-            <ToggleButton
-              style={{
-                flex: 1,
-                justifyContent: "center",
-                borderWidth: 1,
-                borderRadius: 10,
-                borderColor: "#e9e5e5ff",
-              }}
-              value="vnpay"
-              icon={() => <Text style={{ fontSize: 16 }}>VNPay</Text>}
-            />
+          <ToggleButton.Row onValueChange={setValue} value={value}>
             <ToggleButton
               style={{
                 flex: 1,
@@ -986,6 +1040,27 @@ export default function Page() {
               }}
               value="cash"
               icon={() => <Text style={{ fontSize: 16 }}>Tiền mặt</Text>}
+            />
+            <ToggleButton
+              style={{
+                flex: 1,
+                justifyContent: "center",
+                borderColor: "#e9e5e5ff",
+              }}
+              value="momo"
+              icon={() => <Text style={{ fontSize: 16 }}>Momo</Text>}
+            />
+            <ToggleButton
+              style={{
+                flex: 1,
+                justifyContent: "center",
+                borderWidth: 1,
+                borderTopRightRadius: 10,
+                borderBottomRightRadius: 10,
+                borderColor: "#e9e5e5ff",
+              }}
+              value="zalopay"
+              icon={() => <Text style={{ fontSize: 16 }}>ZaloPay</Text>}
             />
           </ToggleButton.Row>
         </View>

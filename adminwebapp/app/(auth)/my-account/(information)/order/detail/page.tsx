@@ -11,30 +11,32 @@ export default function OrderPage() {
   const searchParams = useSearchParams();
   const id = searchParams.get("id");
   const [order, setOrder] = useState<Order | null>(null);
-  async function getCart(id: string) {
-    try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/orders/get-test?id=${id}`,
-        {
-          method: "get",
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        },
-      );
-      const data = await res.json();
-      if (res.status === 200) {
-        setOrder(data);
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  }
 
   useEffect(() => {
-    if (id && accessToken) {
-      getCart(id);
-    }
+    if (!id) return;
+
+    const getCart = async () => {
+      try {
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/orders/get-test?id=${id}`,
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          }
+        );
+
+        if (!res.ok) return;
+
+        const data = await res.json();
+        setOrder(data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    getCart();
   }, [id, accessToken]);
 
   return (

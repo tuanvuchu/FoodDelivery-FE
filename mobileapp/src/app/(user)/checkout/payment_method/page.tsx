@@ -2,7 +2,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useState } from "react";
 import { Alert, Pressable, Text, TouchableOpacity, View } from "react-native";
 
-export default function Page(params) {
+export default function Page() {
   const [method, setMethod] = useState("vnpay");
 
   const methods = [

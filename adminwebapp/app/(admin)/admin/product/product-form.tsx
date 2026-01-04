@@ -62,7 +62,7 @@ export default function ProductForm({ url, product }: ProductFormProps) {
   async function getRes() {
     try {
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/restaurants/get-all-admin`,
+        `${process.env.NEXT_PUBLIC_API_URL}/restaurants/get-all-admin`
       );
       const data = await res.json();
       setRestaurants(data);
@@ -156,7 +156,7 @@ export default function ProductForm({ url, product }: ProductFormProps) {
                   {
                     method: "POST",
                     body: formData,
-                  },
+                  }
                 );
 
                 const result = await res.json();

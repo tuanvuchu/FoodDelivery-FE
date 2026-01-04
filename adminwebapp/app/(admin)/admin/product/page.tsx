@@ -19,7 +19,7 @@ export default function Product() {
             Authorization: `Bearer ${accessToken}`,
             "Content-Type": "application/json",
           },
-        },
+        }
       );
       const data = await res.json();
       setData(data);

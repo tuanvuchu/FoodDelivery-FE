@@ -25,10 +25,11 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import Link from "next/link";
 
 const data = {
   navMain: [
-    { title: "Dashboard", url: "/admin", icon: IconDashboard },
+    { title: "Dashboard", url: "/", icon: IconDashboard },
     { title: "Sản phẩm", url: "/admin/product", icon: IconListDetails },
     { title: "Người dùng", url: "/admin/user", icon: IconChartBar },
     { title: "Nhà hàng", url: "/admin/restaurant", icon: IconHomeFilled },
@@ -64,10 +65,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               asChild
               className="data-[slot=sidebar-menu-button]:!p-1.5"
             >
-              <a href="/admin">
+              <Link href="/">
                 <IconInnerShadowTop className="!size-5" />
                 <span className="text-base font-semibold">U Food</span>
-              </a>
+              </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
