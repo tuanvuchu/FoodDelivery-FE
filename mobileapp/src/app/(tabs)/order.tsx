@@ -26,7 +26,7 @@ const OrderScreen = () => {
   const fetchVouchers = async () => {
     try {
       const res = await fetch(
-        `${getURLBaseBackend()}/api/v1/orders/${appState?.user.id}`,
+        `${getURLBaseBackend()}/api/v1/orders/${appState?.user.id}`
       );
       const data = await res.json();
       setShippingOrders(data.filter((order) => order.status === "shipping"));

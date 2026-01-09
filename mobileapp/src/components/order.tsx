@@ -12,14 +12,15 @@ import OrderDetailModal from "./orderDetailModal";
 
 export default function Order({ data = [], onRefreshData }) {
   const [open, setOpen] = useState(false);
-  const [selectedProducts, setSelectedProducts] = useState([]);
+
+  const [selectedOrderId, setSelectedOrderId] = useState(null);
   const [refreshing, setRefreshing] = useState<boolean>(false);
 
   return (
     <>
       <OrderDetailModal
-        data={selectedProducts}
         open={open}
+        orderId={selectedOrderId}
         onClose={() => setOpen(false)}
       />
 
@@ -43,7 +44,12 @@ export default function Order({ data = [], onRefreshData }) {
           const restaurant = product?.restaurants;
 
           return (
-            <Pressable style={{ position: "relative" }}>
+            <Pressable
+              onPress={() => {
+                setSelectedOrderId(item.id);
+                setOpen(true);
+              }}
+            >
               <View
                 style={{
                   borderRadius: 10,
@@ -92,23 +98,10 @@ export default function Order({ data = [], onRefreshData }) {
                       })}
                     </Text>
 
-                    <Pressable
-                      onPress={() => {
-                        const products = item.order_items.map((i) => ({
-                          id: i.products.id,
-                          name: i.products.name,
-                          image: i.products.image,
-                          total: i.total_price,
-                        }));
-                        setSelectedProducts(products);
-                        setOpen(true);
-                      }}
-                    >
-                      <Text style={{ fontWeight: "bold" }}>
-                        {" "}
-                        ({item.order_items.length} món)
-                      </Text>
-                    </Pressable>
+                    <Text style={{ fontWeight: "bold" }}>
+                      {" "}
+                      ({item.order_items.length} món)
+                    </Text>
                   </View>
                 </View>
               </View>

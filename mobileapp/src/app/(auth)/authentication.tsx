@@ -72,7 +72,6 @@ const LoginScreen = () => {
       <TextInput
         style={styles.input}
         placeholder="Số điện thoại"
-        keyboardType="phone-pad"
         value={username}
         onChangeText={setUsername}
         accessibilityLabel="Số điện thoại"
@@ -138,7 +137,7 @@ const LoginScreen = () => {
         <Text style={styles.buttonText}>Tiếp tục với Apple</Text>
       </TouchableOpacity>
       <Text style={styles.footerText}>
-        Bạn cần hỗ trợ đăng ký? Xem chính sách quy định của Fooddy.
+        Bạn cần hỗ trợ đăng ký? Xem chính sách quy định của UFood
       </Text>
     </View>
   );
